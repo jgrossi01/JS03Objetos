@@ -1,22 +1,31 @@
-class carModel {
+class Car {
     constructor (id, carModel, dayprice){
-        this.id = id;
+        this.id = parseInt(id);
         this.name = carModel;
         this.dayprice = parseInt(dayprice);
-        this.quantity = 1;
-        this.rentedDays = 1;
     }
 }
 
-const arrayCarModels = [];
-arrayCarModels.push(new carModel (nextIndexOf(arrayCarModels),"etios", 2000, 1));
-arrayCarModels.push(new carModel (nextIndexOf(arrayCarModels),"corolla", 3000, 1));
-arrayCarModels.push(new carModel (nextIndexOf(arrayCarModels),"hilux", 4000, 1)); 
+const arrayCars = [];
+arrayCars.push(new Car (nextIndexOf(arrayCars),"etios", 2000));
+arrayCars.push(new Car (nextIndexOf(arrayCars),"corolla", 3000));
+arrayCars.push(new Car (nextIndexOf(arrayCars),"hilux", 4000)); 
 
-console.log(arrayCarModels);
+console.log(arrayCars);
 
+class Reservation {
+    constructor (id, carname, quantity, rentedDays, dayPrice, total){
+        this.id = parseInt(id);
+        this.carname = carname;
+        this.quantity = parseInt(quantity);
+        this.renteddays = parseInt(rentedDays);
+        this.dayprice = Number(dayPrice);
+        this.total = Number(total); 
+    }
+}
+
+const arrayReservations = [];
 let keepBuying; 
-const cart = [];
 
 do {
 let reserveThis;
@@ -24,8 +33,7 @@ let modelInput = prompt("Que modelo desea reservar?");
 
 if (modelInput && isNaN(modelInput)){
     modelInput = modelInput.toLowerCase();
-    reserveThis = arrayCarModels.find(model => model.name === modelInput);
-    
+    reserveThis = arrayCars.find(model => model.name === modelInput);
 } else {
     alert('No encontramos el modelo solicitado');
 }
@@ -45,43 +53,36 @@ if(quantityInput){
     daysInput = prompt(`Por cuantos días precisa los ${quantityInput} ${modelInput}?`);
     while (!daysInput || isNaN(daysInput) || daysInput < 1){
         daysInput = prompt(`Ingrese un número válido. Por cuantos días precisa los ${quantityInput} ${modelInput}?`);
-        
     } 
-    alert(daysInput);
 } else {
     break;
 }
 
 if(reserveThis && quantityInput && daysInput) {
+    
+    let name = reserveThis.name;
+    let dayprice = reserveThis.dayprice;
+    let total = Number(reserveThis.dayprice) * daysInput * quantityInput;
+    console.log(total);
+    arrayReservations.push(new Reservation (nextIndexOf(arrayReservations), name, quantityInput, daysInput, dayprice, total));
+    sum('total');
 
-    saveThis(modelInput,quantityInput,daysInput);
 } else {
-    alert('Algo salio mal. Final step');
-    console.log(reserveThis);
-    console.log(quantityInput);
-    console.log(daysInput);
+    alert('Algo salio mal');
 }
 
 keepBuying = confirm('Quiere seguir comprando?')
 
 } while(keepBuying);
 
-function saveThis (modInp,qty=1,days=1){
-    let id = nextIndexOf(cart);
-    
-    let toSave = arrayCarModels.find(model => model.name === modInp);
-    toSave.id = id;
-    cart.push(toSave);
-
-    let Saved = cart.find(model => model.id === id);
-    
-    Saved.rentedDays = parseInt(days);
-    Saved.quantity = parseInt(qty);
-    
-}
-
 function nextIndexOf(array) {
     return array.length +1;
 };
 
-console.log(cart);
+function sum (key){
+    let finaltotal = arrayReservations.reduce((a, b) => a + b[key], 0);
+    console.log(finaltotal);
+}
+
+console.log(arrayReservations);
+
