@@ -80,6 +80,46 @@ do {
     keepBuying = confirm('Quiere seguir comprando?')
 } while(keepBuying);
 
+
+let tieneCupon;
+let errorCupon;
+let devolucionCupon;
+let totalDescuento;
+let finalqty;
+let finaltotal;
+
+
+
+if (arrayReservations.length > 0){
+    finalqty = arrayReservations.reduce((a, b) => a + b['quantity'], 0);
+    finaltotal = arrayReservations.reduce((a, b) => a + b['total'], 0);
+
+    tieneCupon = confirm("Tiene un cupón de descuento?");
+    while (tieneCupon) {
+        if (errorCupon) {
+          tieneCupon = confirm("No encontramos el cupón. Desea volver a intentar?");
+          if (tieneCupon) {
+            codigoCupon = prompt(`Ingrese su cupón`);
+          }
+        } else {
+          codigoCupon = prompt(`Ingrese su cupón`);
+        }
+
+        if (codigoCupon) {
+          devolucionCupon = aplicarCupon(codigoCupon.toLowerCase());
+        }
+    }
+    
+    console.log('Reservó correctamente '+ finalqty +' vehiculos por un total de $'+ finaltotal);
+    if(devolucionCupon) {
+        console.log(devolucionCupon);
+    }
+} else {
+    console.log('No realizó ninguna reserva.')
+}
+
+console.log(arrayReservations);
+
 function nextIndexOf(array) {
     return array.length +1;
 };
@@ -94,14 +134,19 @@ function saveThis(name, quantityInput, daysInput, dayprice, total){
     console.log('Se agregó a tu carrito '+ quantityInput +' '+ name +' por '+ daysInput +' días. Total parcial: $'+ total);
 }
 
-if (arrayReservations.length > 1){
-    let finalqty = arrayReservations.reduce((a, b) => a + b['quantity'], 0);
-    let finaltotal = arrayReservations.reduce((a, b) => a + b['total'], 0);
-    console.log('Reservó correctamente '+finalqty+' vehiculos por un total final de $'+finaltotal);
-} else {
-    console.log('No realizó ninguna reserva.')
+function aplicarCupon(codigoCupon) {
+    switch (codigoCupon) {
+      case "bariloche":
+        totalDescuento = finaltotal - Number(finaltotal) * 0.1;
+        tieneCupon = false;
+        return `Se le aplicó el descuento "bariloche" del 10% sobre $${finaltotal}.</br>Su monto a pagar es de $${totalDescuento}`;
+      case "rentit2022":
+        totalDescuento = finaltotal - Number(finaltotal) * 0.15;
+        tieneCupon = false;
+        return `Se le aplicó el descuento "rentit" del 15% sobre $${finaltotal}.</br>Su monto a pagar es de $${totalDescuento}`;
+      default:
+        errorCupon = true;
+        return false;
+    }
 }
-
-
-console.log(arrayReservations);
 
